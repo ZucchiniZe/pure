@@ -15,6 +15,7 @@
 # %n => username
 # %m => shortname host
 # %(?..) => prompt conditional - %(condition.true.false)
+# $(prompt_pwd) => condensed path
 # terminal codes:
 # \e7   => save cursor position
 # \e[2A => move cursor 2 lines up
@@ -23,6 +24,9 @@
 # \e[K  => clears everything after the cursor on the current line
 # \e[2K => clear everything on the current line
 
+function prompt_pwd() {
+  echo $PWD | sed -e "s|^$HOME|~|" -e 's|^/private||' -e 's-\([^/.]\)[^/]*/-\1/-g'
+}
 
 # turns seconds into human readable time
 # 165392 => 1d 21h 56m 32s
@@ -128,7 +132,7 @@ prompt_pure_preprompt_render() {
 	[[ -n ${prompt_pure_git_last_dirty_check_timestamp+x} ]] && git_color=red
 
 	# construct preprompt, beginning with path
-	local preprompt="%F{blue}%~%f"
+	local preprompt="%F{blue}$(prompt_pwd)%f"
 	# git info
 	preprompt+="%F{$git_color}${vcs_info_msg_0_}${prompt_pure_git_dirty}%f"
 	# git pull/push arrows
@@ -203,7 +207,7 @@ prompt_pure_precmd() {
 	prompt_pure_check_git_arrows
 
 	# shows the full path in the title
-	prompt_pure_set_title 'expand-prompt' '%~'
+	prompt_pure_set_title 'expand-prompt' '$(prompt_pwd)'
 
 	# get vcs info
 	vcs_info
@@ -345,7 +349,7 @@ prompt_pure_setup() {
 	[[ $UID -eq 0 ]] && prompt_pure_username=' %F{white}%n%f%F{242}@%m%f'
 
 	# prompt turns red if the previous command didn't exit with 0
-	PROMPT="%(?.%F{magenta}.%F{red})${PURE_PROMPT_SYMBOL:-❯}%f "
+	PROMPT="%(?.%F{magenta}.%F{red})${PURE_PROMPT_SYMBOL:-λ}%f "
 }
 
 prompt_pure_setup "$@"
