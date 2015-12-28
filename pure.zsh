@@ -207,7 +207,7 @@ prompt_pure_precmd() {
 	prompt_pure_check_git_arrows
 
 	# shows the full path in the title
-	prompt_pure_set_title 'expand-prompt' '$(prompt_pwd)'
+	prompt_pure_set_title 'expand-prompt' $(prompt_pwd)
 
 	# get vcs info
 	vcs_info
